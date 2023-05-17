@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-greeter-k8s-be-service
+spec:
+  selector:
+    app: hello-greeter-k8s-be
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: LoadBalancer
