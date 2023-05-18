@@ -7,15 +7,15 @@ pipeline {
         stage('Create kube config file') {
             steps {
                 withCredentials([vaultString(credentialsId: 'vault-kube-base64-config', variable: 'KUBECONFIG')]) {
-                    writeFile file: 'config', text: "$KUBECONFIG"
+                    writeFile file: 'config64', text: "$KUBECONFIG"
                 }
-                sh 'base64 -d -i config -o config && chmod 400 config'
+                sh 'base64 --decode config64 > config && chmod 400 config && rm config64'
             }
         }
 
         stage('Run command') {
             steps {
-                sh 'helm install --kubeconfig config hello-greeter-k8s-be-release hello-greeter-k8s-be/'
+                sh 'helm upgrade --install --kubeconfig config hello-greeter-k8s-be-release hello-greeter-k8s-be/'
             }
         }
     }
