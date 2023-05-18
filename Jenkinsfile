@@ -7,7 +7,7 @@ pipeline {
         stage('Create kube config file') {
             steps {
                 withCredentials([vaultString(credentialsId: 'vault-kube-base64-config', variable: 'KUBECONFIGBASE64')]) {
-                    echo "$KUBECONFIGBASE64" | base64 -d -o config
+                    sh "echo "$KUBECONFIGBASE64" | base64 -d -o config"
                 }
                 sh 'chmod 400 config'
             }
