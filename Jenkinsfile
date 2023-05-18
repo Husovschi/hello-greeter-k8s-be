@@ -6,12 +6,10 @@ pipeline {
     stages {
         stage('Create kube config file') {
             steps {
-                script {
-                    withCredentials([vaultString(credentialsId: 'vault-kube-base64-config', variable: 'KUBECONFIGBASE64')]) {
-                        sh "echo "$KUBECONFIGBASE64" | base64 -d -o config"
-                    }
-                    sh 'chmod 400 config'
+                withCredentials([vaultString(credentialsId: 'vault-kube-base64-config', variable: 'KUBECONFIG')]) {
+                    writeFile file: 'config', text: "$KUBECONFIG"
                 }
+                sh 'base64 -d -i config -o config && chmod 400 config'
             }
         }
 
